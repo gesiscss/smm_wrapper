@@ -21,11 +21,10 @@ class SMM:
                  password: str=None,
                  api_key: str=None,
                  lng: str="en",
-                 protocol: str="https",
-                 domain: str="api.wikiwho.net",
-                 version: str="v1.0.0-beta",
-                 attempts: int=2,
-                 pickle_path: str=None):
+                 protocol: str="http",
+                 domain: str="10.6.13.139:8000",
+                 version: str="v1",
+                 attempts: int=2):
         """Constructor of the SMM
 
         Args:

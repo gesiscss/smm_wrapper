@@ -2,7 +2,6 @@
 """
 from typing import Union
 
-import numpy as np
 
 import os
 import requests
@@ -27,9 +26,9 @@ class SMMAPI:
                  password: str=None,
                  api_key: str=None,
                  lng: str="en",
-                 protocol: str="https",
-                 domain: str="api.wikiwho.net",
-                 version: str="v1.0.0-beta",
+                 protocol: str="http",
+                 domain: str="10.6.13.139:8000",
+                 version: str="v1",
                  attempts: int=2):
         """Constructor of the SMMAPI
 
@@ -52,340 +51,130 @@ class SMMAPI:
             self.session.params = {}
             self.session.params['api_key'] = api_key
 
-        self.base = f"{protocol}://{domain}/{lng}/api/{version}"
-        self.base_editor = f"{protocol}://{domain}/{lng}/edit_persistence/{version}"
+        self.base = "{}://{}/politicians/api/".format(protocol, domain)
         self.attempts = attempts
 
-    def all_content(self,
-                    article: Union[int, str],
-                    o_rev_id: bool=True,
-                    editor: bool=True,
-                    token_id: bool=True,
-                    out: bool=True,
-                    _in: bool=True):
-        """Get all content on an article, i.e. Outputs all tokens that have ever existed 
-        in a given article, including their change history for each.
+    def get_politicians(self):
+        """Returns a list of all entities of politicians.
 
-        Args:
-            article (Union[int, str]): page id (int) or title (str) of the page.
-            o_rev_id (bool, optional): Origin revision ID per token
-            editor (bool, optional): Editor ID/Name per token
-            token_id (bool, optional): Token ID per token
-            out (bool, optional): Outbound revision IDs per token
-            _in (bool, optional): Outbound revision IDs per token
+        No input parameters
 
         Returns:
-            dict: result of the api query as documented in 2 - All content in 
-                https://api.wikiwho.net/en/api/v1.0.0-beta/
+            list: result of the api query as documented in Entity list in 
+                http://10.6.13.139:8000/politicians/api/politicians/
         """
 
-        # flatten the parameters
-        params = f'o_rev_id={o_rev_id}&editor={editor}&token_id={token_id}&out={out}&in={_in}'.lower()
-
-        # create the query
-        if isinstance(article, (int, np.integer)):
-            url = f"{self.base}/all_content/page_id/{article}/?{params}"
-        else:
-            url = f"{self.base}/all_content/{article}/?{params}"
+        smm_api_politicians_url = '{}politicians/'.format(self.base)
 
         # return the dictionary
-        return self.request(url)
+        return self.request(smm_api_politicians_url)
 
-    def last_rev_content(self,
-                         article: Union[int, str],
-                         o_rev_id: bool=True,
-                         editor: bool=True,
-                         token_id: bool=True,
-                         out: bool=True,
-                         _in: bool=True):
-        """Get the content of the most recent (last) revision of the given article, as available on Wikipedia.
+    def politician_search(self, names_contain = None, politician_id = None):
+        """Returns either a list with politicians based on the text search or a given politician by id 
 
-        Args:
-            article (Union[int, str]): page id (int) or title (str) of the page.
-            o_rev_id (bool, optional): Origin revision ID per token
-            editor (bool, optional): Editor ID/Name per token
-            token_id (bool, optional): Token ID per token
-            out (bool, optional): Outbound revision IDs per token
-            _in (bool, optional): Outbound revision IDs per token
+        Input parameters:
+                        names_contain (str): Search text in first name, last name, Twitter or Facebook screen names, or Wikipedia titles
+                        OR
+                        politician_id (int): A unique value identifying this politician.
 
         Returns:
-            dict: result of the api query as documented in 1 - Content per revision for GET /rev_content/{article_title}/ and GET /rev_content/page_id/{page_id}/ in 
-                https://api.wikiwho.net/en/api/v1.0.0-beta/
+            names_contain: returns a list of all entities searched by names, firstnames and usernames
+            politician_id: returns a given politician by id
         """
+        if names_contain is not None:
+            url = '{}politicians/search/'.format(self.base)
+            parameters={'names_contain': names_contain}
+        elif politician_id is not None:
+            url = '{}politicians/{}/'.format(self.base, politician_id)
+            parameters = {}
 
-        # flatten the parameters
-        params = f'o_rev_id={o_rev_id}&editor={editor}&token_id={token_id}&out={out}&in={_in}'.lower()
+        return self.session.get(url=url, params=parameters).json()
 
-        # create the query
-        if isinstance(article, (int, np.integer)):
-            url = f"{self.base}/rev_content/page_id/{article}/?{params}"
-        else:
-            url = f"{self.base}/rev_content/{article}/?{params}"
+    def twitter(self, type_of_tw, twitter_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query tweets or replies made by politicians, or by a politician using twitter id or using politician id
 
-        # return the dictionary
-        return self.request(url)
-
-    def specific_rev_content_by_rev_id(self,
-                                       rev_id: int,
-                                       article: Union[int, str]=None,
-                                       o_rev_id: bool=True,
-                                       editor: bool=True,
-                                       token_id: bool=True,
-                                       out: bool=True,
-                                       _in: bool=True):
-        """Get the content of the given revision id.
-
-        Args:
-            rev_id (int): Revision ID to get content for.
-            article (Union[int, str]): page title (str) of the page (page id (int) is not supported by the API).
-            o_rev_id (bool, optional): Origin revision ID per token
-            editor (bool, optional): Editor ID/Name per token
-            token_id (bool, optional): Token ID per token
-            out (bool, optional): Outbound revision IDs per token
-            _in (bool, optional): Outbound revision IDs per token
+        Input parameters:
+                        type_of_tw (str): tweets or replies
+                        twitter_user_id (str): twitter user id
+                        OR
+                        politician_id (str): A unique value identifying this politician.
+                        optional:
+                        text_contains (str): filter tweets by the content of the message
+                        from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by tweets posted before this date (format: YYYY-MM-DD)
+                        aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict: result of the api query as documented in 1 - Content per revision  for GET /rev_content/rev_id/{rev_id}/ in 
-                https://api.wikiwho.net/en/api/v1.0.0-beta/
+            dict, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/politicians/api/swagger/
         """
+        if twitter_user_id is None and politician_id is None:
+            url = '{}twitter/{}/politicians/'.format(self.base, type_of_tw)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        elif twitter_user_id is not None:
+            url = '{}twitter/{}/politicians/user_id/{}/'.format(self.base, type_of_tw, twitter_user_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        elif politician_id is not None:
+            url = '{}twitter/{}/politicians/{}/'.format(self.base, type_of_tw, politician_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
-        # create the query
-        if isinstance(article, (int, np.integer)):
-            raise NotImplementedError("When the article is accessed through the web API, you must "
-                                      "provide the article title in the article parameter of type str, article id (int) "
-                                      "is ignored.")
-        else:
-            # flatten the parameters
-            params = f'o_rev_id={o_rev_id}&editor={editor}&token_id={token_id}&out={out}&in={_in}'.lower()
+        return self.session.get(url=url, params=parameters).json()
 
-        if article is None:
-            url = f"{self.base}/rev_content/rev_id/{rev_id}/?{params}"
-        else:
-            url = f"{self.base}/rev_content/{article}/{rev_id}/?{params}"
+    def facebook(self, type_of_fb, facebook_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query posts or comments from facebook made by politicians, or by a politician using facebook id or using politician id
 
-        # return the dictionary
-        return self.request(url)
-
-    def range_rev_content_by_article_title(self,
-                                           article: Union[int, str],
-                                           start_rev_id: int,
-                                           end_rev_id: int,
-                                           o_rev_id: bool=True,
-                                           editor: bool=True,
-                                           token_id: bool=True,
-                                           out: bool=True,
-                                           _in: bool=True):
-        """Get the content of a range of revisions of an article, by given article title, start revison id and end revison id.
-
-        Args:
-            article (str): Title (str) of the page.
-            start_rev_id (int): Start revision ID
-            end_rev_id (int): End revision ID
-            o_rev_id (bool, optional): Origin revision ID per token
-            editor (bool, optional): Editor ID/Name per token
-            token_id (bool, optional): Token ID per token
-            out (bool, optional): Outbound revision IDs per token
-            _in (bool, optional): Outbound revision IDs per token
+        Input parameters:
+                        type_of_fb (str): posts or comments
+                        facebook_user_id (str): facebook user id
+                        OR
+                        politician_id (str): A unique value identifying this politician.
+                        optional:
+                        text_contains (str): filter tweets by the content of the message
+                        from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by tweets posted before this date (format: YYYY-MM-DD)
+                        aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict: result of the api query as documented in 1 - Content per revision  for GET /rev_content/{article_title}/{start_rev_id}/{end_rev_id}/ in 
-                https://api.wikiwho.net/en/api/v1.0.0-beta/
+            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/politicians/api/swagger/
         """
+        if facebook_user_id is None and politician_id is None:
+            url = '{}facebook/{}/politicians/'.format(self.base, type_of_fb)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        elif facebook_user_id is not None:
+            url = '{}facebook/{}/politicians/user_id/{}/'.format(self.base, type_of_fb, facebook_user_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        elif politician_id is not None:
+            url = '{}facebook/{}/politicians/{}/'.format(self.base, type_of_fb, politician_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
-        # create the query
-        if isinstance(article, (int, np.integer)):
-            raise NotImplementedError("When the article is accessed through the web API, you must "
-                                      "provide the article title in the article parameter of type str, article id (int) "
-                                      "is ignored.")
-        else:
-            # flatten the parameters
-            params = f'o_rev_id={o_rev_id}&editor={editor}&token_id={token_id}&out={out}&in={_in}'.lower()
+        return self.session.get(url=url, params=parameters).json()
 
-        url = f"{self.base}/rev_content/{article}/{start_rev_id}/{end_rev_id}/?{params}"
+    def wikipedia(self, wikipedia_page_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns change objects (chobs) that refer to politicians Wikipedia pages, or by a politician using wikipedia page id or using politician id
 
-        # return the dictionary
-        return self.request(url)
-
-    def rev_ids_of_article(self,
-                           article: Union[int, str],
-                           editor: bool=True,
-                           timestamp: bool=True):
-        """Get revision IDs of an article by given article title or page id.
-
-        Args:
-            article (Union[int, str]): page id (int) or title (str) of the page.
-            editor (bool, optional): Editor ID/Name per token
-            timestamp (bool, optional): timestamp of each revision
+        Input parameters:
+                        wikipedia_page_id (str): wikipedia page id
+                        OR
+                        politician_id (str): A unique value identifying this politician.
+                        optional:
+                        text_contains (str): filter tweets by the content of the message
+                        from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by tweets posted before this date (format: YYYY-MM-DD)
+                        aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict: result of the api query as documented in 1 - Content per revision for GET /rev_ids/{article_title}/ and GET /rev_ids/page_id/{page_id}/ in 
-                https://api.wikiwho.net/en/api/v1.0.0-beta/
+            dict, result of the api query as documented in wikipedia content in http://10.6.13.139:8000/politicians/api/swagger/
         """
+        if wikipedia_page_id is None and politician_id is None:
+            url = '{}wikipedia/chobs/politicians/'.format(self.base)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        elif wikipedia_page_id is not None:
+            url = '{}wikipedia/chobs/politicians/page_id/{}/'.format(self.base, wikipedia_page_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        elif politician_id is not None:
+            url = '{}wikipedia/chobs/politicians/{}/'.format(self.base, politician_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
-        # flatten the parameters
-        params = f'editor={editor}&timestamp={timestamp}'.lower()
-
-        # create the query
-        if isinstance(article, (int, np.integer)):
-            url = f"{self.base}/rev_ids/page_id/{article}/?{params}"
-        else:
-            url = f"{self.base}/rev_ids/{article}/?{params}"
-
-        # return the dictionary
-        return self.request(url)
-
-    @deprecation.deprecated(deprecated_in="1.4", removed_in="1.6",
-                            details="Use the edit_persistence function instead.")
-    def actions(self,
-                page_id: int=None,
-                editor_id: int=None,
-                start: str=None,
-                end: str=None):
-        """Get monthly editons for given page id or editor id or both.
-
-        Args:
-            page_id (int, optional): page id (int).
-            editor_id (int, optional): editor id (int).
-            start (str, optional): Origin revision ID per token
-            end (str, optional): Editor ID/Name per token
-
-        Returns:
-            dict: result of the api query as documented in /editor/{editor_id}/ in 
-                https://www.wikiwho.net/en/edit_persistence/v1.0.0-beta/
-        """
-
-        # flatten the parameters
-        params = ''
-        if start and end:
-            params = f'start={start}&end={end}'
-        elif start:
-            params = f'start={start}'
-        elif end:
-            params = f'end={end}'
-
-        if page_id and editor_id:
-            url = f"{self.base_editor}/page/editor/{page_id}/{editor_id}/?{params}"
-        elif editor_id:
-            url = f"{self.base_editor}/editor/{editor_id}/?{params}"
-        elif page_id:
-            url = f"{self.base_editor}/page/{page_id}/?{params}"
-
-        # return the dictionary
-        return self.request(url)
-
-    @deprecation.deprecated(deprecated_in="1.4", removed_in="1.6",
-                            current_version=__version__,
-                            details="Use the edit_persistence_as_table function instead.")
-    def actions_as_table(self,
-                         page_id: int=None,
-                         editor_id: int=None,
-                         start: str=None,
-                         end: str=None):
-        """Get monthly editons in tabular format for given page id or editor id or both.
-
-        Args:
-            page_id (int, optional): page id (int).
-            editor_id (int, optional): editor id (int).
-            start (str, optional): Origin revision ID per token
-            end (str, optional): Editor ID/Name per token
-
-        Returns:
-            dict: result of the api query as documented in /editor/{editor_id}/ in 
-                https://www.wikiwho.net/en/edit_persistence/v1.0.0-beta/
-        """
-
-        # flatten the parameters
-        params = ''
-        if start and end:
-            params = f'start={start}&end={end}'
-        elif start:
-            params = f'start={start}'
-        elif end:
-            params = f'end={end}'
-
-        if page_id and editor_id:
-            url = f"{self.base_editor}/as_table/page/editor/{page_id}/{editor_id}/?{params}"
-        elif editor_id:
-            url = f"{self.base_editor}/as_table/editor/{editor_id}/?{params}"
-        elif page_id:
-            url = f"{self.base_editor}/as_table/page/{page_id}/?{params}"
-
-        # return the dictionary
-        return self.request(url)
-
-    def edit_persistence(self,
-                         page_id: int=None,
-                         editor_id: int=None,
-                         start: str=None,
-                         end: str=None):
-        """Get monthly editons for given page id or editor id or both.
-
-        Args:
-            page_id (int, optional): page id (int).
-            editor_id (int, optional): editor id (int).
-            start (str, optional): Origin revision ID per token
-            end (str, optional): Editor ID/Name per token
-
-        Returns:
-            dict: result of the api query as documented in /editor/{editor_id}/ in 
-                https://www.wikiwho.net/en/edit_persistence/v1.0.0-beta/
-        """
-
-        # flatten the parameters
-        params = ''
-        if start and end:
-            params = f'start={start}&end={end}'
-        elif start:
-            params = f'start={start}'
-        elif end:
-            params = f'end={end}'
-
-        if page_id and editor_id:
-            url = f"{self.base_editor}/page/editor/{page_id}/{editor_id}/?{params}"
-        elif editor_id:
-            url = f"{self.base_editor}/editor/{editor_id}/?{params}"
-        elif page_id:
-            url = f"{self.base_editor}/page/{page_id}/?{params}"
-
-        # return the dictionary
-        return self.request(url)
-
-    def edit_persistence_as_table(self,
-                                  page_id: int=None,
-                                  editor_id: int=None,
-                                  start: str=None,
-                                  end: str=None):
-        """Get monthly editons in tabular format for given page id or editor id or both.
-
-        Args:
-            page_id (int, optional): page id (int).
-            editor_id (int, optional): editor id (int).
-            start (str, optional): Origin revision ID per token
-            end (str, optional): Editor ID/Name per token
-
-        Returns:
-            dict: result of the api query as documented in /editor/{editor_id}/ in 
-                https://www.wikiwho.net/en/edit_persistence/v1.0.0-beta/
-        """
-
-        # flatten the parameters
-        params = ''
-        if start and end:
-            params = f'start={start}&end={end}'
-        elif start:
-            params = f'start={start}'
-        elif end:
-            params = f'end={end}'
-
-        if page_id and editor_id:
-            url = f"{self.base_editor}/as_table/page/editor/{page_id}/{editor_id}/?{params}"
-        elif editor_id:
-            url = f"{self.base_editor}/as_table/editor/{editor_id}/?{params}"
-        elif page_id:
-            url = f"{self.base_editor}/as_table/page/{page_id}/?{params}"
-
-        # return the dictionary
-        return self.request(url)
+        return self.session.get(url=url, params=parameters).json()
 
     def request(self, url: str, tries=2) -> dict:
         """Do the request

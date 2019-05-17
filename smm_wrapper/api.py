@@ -90,11 +90,10 @@ class SMMAPI:
 
         return self.session.get(url=url, params=parameters).json()
 
-    def twitter(self, type_of_tw, twitter_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
-        """Returns query tweets or replies made by politicians, or by a politician using twitter id or using politician id
+    def tweets_by(self, twitter_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query tweets made by politicians, or by a politician using twitter id or using politician id
 
         Input parameters:
-                        type_of_tw (str): tweets or replies
                         twitter_user_id (str): twitter user id
                         OR
                         politician_id (str): A unique value identifying this politician.
@@ -108,22 +107,49 @@ class SMMAPI:
             dict, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/politicians/api/swagger/
         """
         if twitter_user_id is None and politician_id is None:
-            url = '{}twitter/{}/politicians/'.format(self.base, type_of_tw)
+            url = '{}twitter/tweets_by/politicians/'.format(self.base)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif twitter_user_id is not None:
-            url = '{}twitter/{}/politicians/user_id/{}/'.format(self.base, type_of_tw, twitter_user_id)
+            url = '{}twitter/tweets_by/politicians/user_id/{}/'.format(self.base, twitter_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif politician_id is not None:
-            url = '{}twitter/{}/politicians/{}/'.format(self.base, type_of_tw, politician_id)
+            url = '{}twitter/tweets_by/politicians/{}/'.format(self.base, politician_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()
 
-    def facebook(self, type_of_fb, facebook_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
-        """Returns query posts or comments from facebook made by politicians, or by a politician using facebook id or using politician id
+    def reply_to(self, twitter_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query twitter replies made by politicians, or by a politician using twitter id or using politician id
 
         Input parameters:
-                        type_of_fb (str): posts or comments
+                        twitter_user_id (str): twitter user id
+                        OR
+                        politician_id (str): A unique value identifying this politician.
+                        optional:
+                        text_contains (str): filter tweets by the content of the message
+                        from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by tweets posted before this date (format: YYYY-MM-DD)
+                        aggregate_by (str): criteria that will be used to aggregate (month by default)
+
+        Returns:
+            dict, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/politicians/api/swagger/
+        """
+        if twitter_user_id is None and politician_id is None:
+            url = '{}twitter/reply_to/politicians/'.format(self.base)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        elif twitter_user_id is not None:
+            url = '{}twitter/reply_to/politicians/user_id/{}/'.format(self.base, twitter_user_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        elif politician_id is not None:
+            url = '{}twitter/reply_to/politicians/{}/'.format(self.base, politician_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+
+        return self.session.get(url=url, params=parameters).json()
+
+    def posts_by(self, facebook_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query posts from facebook made by politicians, or by a politician using facebook id or using politician id
+
+        Input parameters:
                         facebook_user_id (str): facebook user id
                         OR
                         politician_id (str): A unique value identifying this politician.
@@ -137,13 +163,41 @@ class SMMAPI:
             dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/politicians/api/swagger/
         """
         if facebook_user_id is None and politician_id is None:
-            url = '{}facebook/{}/politicians/'.format(self.base, type_of_fb)
+            url = '{}facebook/posts_by/politicians/'.format(self.base)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif facebook_user_id is not None:
-            url = '{}facebook/{}/politicians/user_id/{}/'.format(self.base, type_of_fb, facebook_user_id)
+            url = '{}facebook/posts_by/politicians/user_id/{}/'.format(self.base, facebook_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif politician_id is not None:
-            url = '{}facebook/{}/politicians/{}/'.format(self.base, type_of_fb, politician_id)
+            url = '{}facebook/posts_by/politicians/{}/'.format(self.base, politician_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+
+        return self.session.get(url=url, params=parameters).json()
+
+    def comments_by(self, facebook_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query comments from facebook made by politicians, or by a politician using facebook id or using politician id
+
+        Input parameters:
+                        facebook_user_id (str): facebook user id
+                        OR
+                        politician_id (str): A unique value identifying this politician.
+                        optional:
+                        text_contains (str): filter tweets by the content of the message
+                        from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by tweets posted before this date (format: YYYY-MM-DD)
+                        aggregate_by (str): criteria that will be used to aggregate (month by default)
+
+        Returns:
+            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/politicians/api/swagger/
+        """
+        if facebook_user_id is None and politician_id is None:
+            url = '{}facebook/comments_by/politicians/'.format(self.base)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        elif facebook_user_id is not None:
+            url = '{}facebook/comments_by/politicians/user_id/{}/'.format(self.base, facebook_user_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        elif politician_id is not None:
+            url = '{}facebook/comments_by/politicians/{}/'.format(self.base, politician_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()

@@ -13,8 +13,8 @@ setuptools.setup(
     name="smm_wrapper",
     version="1.0",
     # Author details
-    author="",
-    author_email="ulloaro@gesis.org",
+    author="Alexandra Stannida, Roberto Ulloa",
+    author_email="alexandra.stankevich@gesis.org,roberto.ulloa@gesis.org",
     description="A light Python wrapper for the SMM API (Politicians Social Media Monitoring API)",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -31,5 +31,5 @@ setuptools.setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['requests', 'pandas', 'deprecation']
+    install_requires=['requests', 'pandas']
 )

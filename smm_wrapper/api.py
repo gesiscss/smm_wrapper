@@ -5,6 +5,7 @@ from typing import Union
 
 import os
 import requests
+import deprecation
 
 from . import __version__
 

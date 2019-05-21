@@ -210,8 +210,11 @@ class DataView:
         return df
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 =======
+=======
+>>>>>>> d9c788aaed63b95a4a77fbd127ef9a58460fc33b
     def actions_as_table(self,
                          page_id: int=None,
                          editor_id: int=None,

@@ -29,5 +29,6 @@ all_chobs = smm.api.wikipedia()
 chobs_by_politician = smm.api.wikipedia(politician_id='2')
 chobs_by_wikipage = smm.api.wikipedia(wikipedia_page_id='4754538')
 
+dataframe = smm.dv.politicians_df()
 
 import ipdb; ipdb.set_trace()  # breakpoint 67efd4b1 //

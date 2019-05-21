@@ -4,8 +4,6 @@ import pandas as pd
 import itertools
 from typing import Union
 
-import deprecation
-
 from .api import SMMAPI
 from . import __version__
 
@@ -301,9 +299,6 @@ class DataView:
             [timestamp, editor]) if not include
         ])
 
-    @deprecation.deprecated(deprecated_in="1.5", removed_in="1.6",
-                            current_version=__version__,
-                            details="Use the edit_persistence function instead.")
     def actions(self,
                 page_id: int=None,
                 editor_id: int=None,
@@ -352,9 +347,6 @@ class DataView:
 
         return df
 
-    @deprecation.deprecated(deprecated_in="1.5", removed_in="1.6",
-                            current_version=__version__,
-                            details="Use the edit_persistence function instead.")
     def actions_as_table(self,
                          page_id: int=None,
                          editor_id: int=None,

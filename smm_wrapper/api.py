@@ -51,7 +51,7 @@ class SMMAPI:
             self.session.params = {}
             self.session.params['api_key'] = api_key
 
-        self.base = "{}://{}/politicians/api/".format(protocol, domain)
+        self.base = "{}://{}/api/politicians/".format(protocol, domain)
         self.attempts = attempts
 
     def get_politicians(self):
@@ -64,7 +64,7 @@ class SMMAPI:
                 http://10.6.13.139:8000/politicians/api/politicians/
         """
 
-        smm_api_politicians_url = '{}politicians/'.format(self.base)
+        smm_api_politicians_url = '{}all/'.format(self.base)
 
         # return the dictionary
         return self.request(smm_api_politicians_url)
@@ -82,10 +82,10 @@ class SMMAPI:
             politician_id: returns a given politician by id
         """
         if names_contain is not None:
-            url = '{}politicians/search/'.format(self.base)
+            url = '{}all/search/'.format(self.base)
             parameters={'names_contain': names_contain}
         elif politician_id is not None:
-            url = '{}politicians/{}/'.format(self.base, politician_id)
+            url = '{}all/{}/'.format(self.base, politician_id)
             parameters = {}
 
         return self.session.get(url=url, params=parameters).json()

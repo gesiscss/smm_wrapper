@@ -39,7 +39,7 @@ class DataView:
 
 
         df = pd.DataFrame(response, columns=[
-            'politician_id','name', 'firstname', 'fb_ids', 'tw_ids', 'wp_ids'
+            'politician_id','name', 'firstname', 'affiliation', 'fb_ids', 'tw_ids', 'wp_ids'
         ])
         df.set_index('politician_id', inplace=True)
 

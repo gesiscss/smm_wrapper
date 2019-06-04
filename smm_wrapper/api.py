@@ -103,7 +103,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/politicians/api/swagger/
         """
         if twitter_user_id is None and politician_id is None:
             url = '{}twitter/tweets_by/politicians/'.format(self.base)
@@ -117,7 +117,7 @@ class SMMAPI:
 
         return self.session.get(url=url, params=parameters).json()
 
-    def reply_to(self, twitter_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+    def replies_to(self, twitter_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
         """Returns query twitter replies made by politicians, or by a politician using twitter id or using politician id
 
         Input parameters:
@@ -131,16 +131,16 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/politicians/api/swagger/
         """
         if twitter_user_id is None and politician_id is None:
-            url = '{}twitter/reply_to/politicians/'.format(self.base)
+            url = '{}twitter/replies_to/politicians/'.format(self.base)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif twitter_user_id is not None:
-            url = '{}twitter/reply_to/politicians/user_id/{}/'.format(self.base, twitter_user_id)
+            url = '{}twitter/replies_to/politicians/user_id/{}/'.format(self.base, twitter_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif politician_id is not None:
-            url = '{}twitter/reply_to/politicians/{}/'.format(self.base, politician_id)
+            url = '{}twitter/replies_to/politicians/{}/'.format(self.base, politician_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()

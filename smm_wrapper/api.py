@@ -27,6 +27,7 @@ class SMMAPI:
                  lng: str="en",
                  protocol: str="http",
                  domain: str="10.6.13.139:8000",
+                 unit: str="politicians",
                  version: str="v1",
                  attempts: int=2):
         """Constructor of the SMMAPI
@@ -41,6 +42,7 @@ class SMMAPI:
             version (str, optional): the version of the api
             attempts (int, optional): the number of attempts before giving up trying to connect
         """
+        self.unit = unit
 
         self.session = requests.Session()
         if username and password:
@@ -50,7 +52,7 @@ class SMMAPI:
             self.session.params = {}
             self.session.params['api_key'] = api_key
 
-        self.base = "{}://{}/api/politicians/".format(protocol, domain)
+        self.base = "{}://{}/api/{}/".format(protocol, domain, self.unit)
         self.attempts = attempts
 
     def get_politicians(self):
@@ -106,13 +108,13 @@ class SMMAPI:
             dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/api/politicians/swagger/
         """
         if twitter_user_id is None and politician_id is None:
-            url = '{}twitter/tweets_by/politicians/'.format(self.base)
+            url = '{}twitter/tweets_by/{}/'.format(self.base, self.unit)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif twitter_user_id is not None:
-            url = '{}twitter/tweets_by/politicians/user_id/{}/'.format(self.base, twitter_user_id)
+            url = '{}twitter/tweets_by/{}/user_id/{}/'.format(self.base, self.unit, twitter_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif politician_id is not None:
-            url = '{}twitter/tweets_by/politicians/{}/'.format(self.base, politician_id)
+            url = '{}twitter/tweets_by/{}/{}/'.format(self.base, self.unit, politician_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()
@@ -134,13 +136,13 @@ class SMMAPI:
             dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/api/politicians/swagger/
         """
         if twitter_user_id is None and politician_id is None:
-            url = '{}twitter/replies_to/politicians/'.format(self.base)
+            url = '{}twitter/replies_to/{}/'.format(self.base, self.unit)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif twitter_user_id is not None:
-            url = '{}twitter/replies_to/politicians/user_id/{}/'.format(self.base, twitter_user_id)
+            url = '{}twitter/replies_to/{}/user_id/{}/'.format(self.base, self.unit, twitter_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif politician_id is not None:
-            url = '{}twitter/replies_to/politicians/{}/'.format(self.base, politician_id)
+            url = '{}twitter/replies_to/{}/{}/'.format(self.base, self.unit, politician_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()
@@ -162,13 +164,13 @@ class SMMAPI:
             dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/api/politicians/swagger/
         """
         if facebook_user_id is None and politician_id is None:
-            url = '{}facebook/posts_by/politicians/'.format(self.base)
+            url = '{}facebook/posts_by/{}/'.format(self.base, self.unit)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif facebook_user_id is not None:
-            url = '{}facebook/posts_by/politicians/user_id/{}/'.format(self.base, facebook_user_id)
+            url = '{}facebook/posts_by/{}/user_id/{}/'.format(self.base, self.unit, facebook_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif politician_id is not None:
-            url = '{}facebook/posts_by/politicians/{}/'.format(self.base, politician_id)
+            url = '{}facebook/posts_by/{}/{}/'.format(self.base, self.unit, politician_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()
@@ -190,13 +192,13 @@ class SMMAPI:
             dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/api/politicians/swagger/
         """
         if facebook_user_id is None and politician_id is None:
-            url = '{}facebook/comments_by/politicians/'.format(self.base)
+            url = '{}facebook/comments_by/{}/'.format(self.base, self.unit)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif facebook_user_id is not None:
-            url = '{}facebook/comments_by/politicians/user_id/{}/'.format(self.base, facebook_user_id)
+            url = '{}facebook/comments_by/{}/user_id/{}/'.format(self.base, self.unit, facebook_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif politician_id is not None:
-            url = '{}facebook/comments_by/politicians/{}/'.format(self.base, politician_id)
+            url = '{}facebook/comments_by/{}/{}/'.format(self.base, self.unit, politician_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()
@@ -218,13 +220,13 @@ class SMMAPI:
             dict, result of the api query as documented in wikipedia content in http://10.6.13.139:8000/api/politicians/swagger/
         """
         if wikipedia_page_id is None and politician_id is None:
-            url = '{}wikipedia/chobs/politicians/'.format(self.base)
+            url = '{}wikipedia/chobs/{}/'.format(self.base, self.unit)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif wikipedia_page_id is not None:
-            url = '{}wikipedia/chobs/politicians/page_id/{}/'.format(self.base, wikipedia_page_id)
+            url = '{}wikipedia/chobs/{}/page_id/{}/'.format(self.base, self.unit, wikipedia_page_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif politician_id is not None:
-            url = '{}wikipedia/chobs/politicians/{}/'.format(self.base, politician_id)
+            url = '{}wikipedia/chobs/{}/{}/'.format(self.base, self.unit, politician_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()

@@ -23,6 +23,7 @@ class SMM:
                  lng: str="en",
                  protocol: str="http",
                  domain: str="10.6.13.139:8000",
+                 unit: str="politicians",
                  version: str="v1",
                  attempts: int=2):
         """Constructor of the SMM
@@ -45,6 +46,7 @@ class SMM:
                               lng,
                               protocol,
                               domain,
+                              unit,
                               version,
                               attempts)
 

@@ -60,7 +60,7 @@ class SMMAPI:
 
         Returns:
             list: result of the api query as documented in Entity list in 
-                http://10.6.13.139:8000/politicians/api/politicians/
+                http://10.6.13.139:8000/api/politicians/
         """
 
         smm_api_politicians_url = '{}all/'.format(self.base)
@@ -103,7 +103,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/api/politicians/swagger/
         """
         if twitter_user_id is None and politician_id is None:
             url = '{}twitter/tweets_by/politicians/'.format(self.base)
@@ -131,7 +131,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/api/politicians/swagger/
         """
         if twitter_user_id is None and politician_id is None:
             url = '{}twitter/replies_to/politicians/'.format(self.base)
@@ -159,7 +159,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/api/politicians/swagger/
         """
         if facebook_user_id is None and politician_id is None:
             url = '{}facebook/posts_by/politicians/'.format(self.base)
@@ -187,7 +187,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/api/politicians/swagger/
         """
         if facebook_user_id is None and politician_id is None:
             url = '{}facebook/comments_by/politicians/'.format(self.base)
@@ -209,13 +209,13 @@ class SMMAPI:
                         OR
                         politician_id (str): A unique value identifying this politician.
                         optional:
-                        text_contains (str): filter tweets by the content of the message
-                        from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
-                        to_date (string($date)): filter by tweets posted before this date (format: YYYY-MM-DD)
+                        text_contains (str): filter chobs by the content of the message
+                        from_date (string($date)): filter by chobs  after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by chobs before this date (format: YYYY-MM-DD)
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in wikipedia content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in wikipedia content in http://10.6.13.139:8000/api/politicians/swagger/
         """
         if wikipedia_page_id is None and politician_id is None:
             url = '{}wikipedia/chobs/politicians/'.format(self.base)

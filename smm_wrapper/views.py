@@ -55,7 +55,7 @@ class DataView:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            DataFrame, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/politicians/api/swagger/
+            DataFrame, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/api/politicians/swagger/
         """
 
         response = self.api.tweets_by(
@@ -98,7 +98,7 @@ class DataView:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            DataFrame, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/politicians/api/swagger/
+            DataFrame, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/api/politicians/swagger/
         """
 
         response = self.api.replies_to(
@@ -119,6 +119,132 @@ class DataView:
         response.pop('aggregated_by')
         response['date'] = response.pop('labels')
         response['replies'] = response.pop('values')
+
+        df = pd.DataFrame(response)
+
+        df['date'] = pd.to_datetime(df['date'])
+
+        return df
+
+    def posts_by(self, facebook_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query facebook posts made by politicians, or by a politician using facebook id or using politician id
+
+        Input parameters:
+                        facebook_user_id (str): facebook user id
+                        OR
+                        politician_id (str): A unique value identifying this politician.
+                        optional:
+                        text_contains (str): filter facebook posts by the content of the message
+                        from_date (string($date)): filter by facebook posts posted after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by facebook posts posted before this date (format: YYYY-MM-DD)
+                        aggregate_by (str): criteria that will be used to aggregate (month by default)
+
+        Returns:
+            DataFrame, result of the api query as documented in facebook posts_by content in http://10.6.13.139:8000/api/politicians/swagger/
+        """
+
+        response = self.api.posts_by(
+            facebook_user_id, politician_id, text_contains, from_date, to_date, aggregate_by)
+
+        if facebook_user_id is not None:
+            response['facebook_user_id'] = facebook_user_id
+        if politician_id is not None:
+            response['politician_id'] = politician_id
+        if text_contains is not None:
+            response['text_contains'] = text_contains
+        if from_date is not None:
+            response['from_date'] = from_date
+        if to_date is not None:
+            response['to_date'] = to_date
+
+        response.pop('response_type')
+        response.pop('aggregated_by')
+        response['date'] = response.pop('labels')
+        response['posts'] = response.pop('values')
+
+        df = pd.DataFrame(response)
+
+        df['date'] = pd.to_datetime(df['date'])
+
+        return df
+
+    def comments_by(self, facebook_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query facebook comments made by politicians, or by a politician using facebook id or using politician id
+
+        Input parameters:
+                        facebook_user_id (str): facebook user id
+                        OR
+                        politician_id (str): A unique value identifying this politician.
+                        optional:
+                        text_contains (str): filter facebook comments by the content of the message
+                        from_date (string($date)): filter by facebook comments posted after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by facebook comments posted before this date (format: YYYY-MM-DD)
+                        aggregate_by (str): criteria that will be used to aggregate (month by default)
+
+        Returns:
+            DataFrame, result of the api query as documented in facebook comments_by content in http://10.6.13.139:8000/api/politicians/swagger/
+        """
+
+        response = self.api.comments_by(
+            facebook_user_id, politician_id, text_contains, from_date, to_date, aggregate_by)
+
+        if facebook_user_id is not None:
+            response['facebook_user_id'] = facebook_user_id
+        if politician_id is not None:
+            response['politician_id'] = politician_id
+        if text_contains is not None:
+            response['text_contains'] = text_contains
+        if from_date is not None:
+            response['from_date'] = from_date
+        if to_date is not None:
+            response['to_date'] = to_date
+
+        response.pop('response_type')
+        response.pop('aggregated_by')
+        response['date'] = response.pop('labels')
+        response['comments'] = response.pop('values')
+
+        df = pd.DataFrame(response)
+
+        df['date'] = pd.to_datetime(df['date'])
+
+        return df
+
+    def wikipedia(self, wikipedia_page_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query wikipedia change objects (chobs) made by politicians, or by a politician using wikipedia id or using politician id
+
+        Input parameters:
+                        wikipedia_page_id (str): wikipedia page id
+                        OR
+                        politician_id (str): A unique value identifying this politician.
+                        optional:
+                        text_contains (str): filter chobs by the content of the message
+                        from_date (string($date)): filter by chobs posted after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by chobs posted before this date (format: YYYY-MM-DD)
+                        aggregate_by (str): criteria that will be used to aggregate (month by default)
+
+        Returns:
+            DataFrame, result of the api query as documented in wikipedia content in http://10.6.13.139:8000/api/politicians/swagger/
+        """
+
+        response = self.api.wikipedia(
+           wikipedia_page_id, politician_id, text_contains, from_date, to_date, aggregate_by)
+
+        if wikipedia_page_id is not None:
+            response['wikipedia_page_id'] = wikipedia_page_id
+        if politician_id is not None:
+            response['politician_id'] = politician_id
+        if text_contains is not None:
+            response['text_contains'] = text_contains
+        if from_date is not None:
+            response['from_date'] = from_date
+        if to_date is not None:
+            response['to_date'] = to_date
+
+        response.pop('response_type')
+        response.pop('aggregated_by')
+        response['date'] = response.pop('labels')
+        response['chobs'] = response.pop('values')
 
         df = pd.DataFrame(response)
 

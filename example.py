@@ -4,7 +4,7 @@ from smm_wrapper import SMM
 
 # Examples using the api directly
 smm = SMM()
-smm2 = SMM(unit = "media")
+smm2 = SMM(unit = "organizations")
 list_of_politicians = smm.api.get_politicians()
 politician_search = smm.api.politician_search(names_contain='merkel')
 politician = smm.api.politician_search(politician_id=2193)

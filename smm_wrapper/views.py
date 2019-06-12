@@ -34,11 +34,12 @@ class DataView:
             fb_ids:list(int), ids of all facebook accounts for a politician
             tw_ids:list(int), ids of all twitter accounts for a politician
             wp_ids:list(int), ids of all wikipedia pages for a politician
+            wp_titles:list(string), wikipedia titles associated to the politician
         """
         response = self.api.get_politicians()
 
         return pd.DataFrame(response, columns=[
-            'politician_id', 'name', 'firstname', 'affiliation', 'fb_ids', 'tw_ids', 'wp_ids'
+            'politician_id', 'name', 'firstname', 'affiliation', 'fb_ids', 'tw_ids', 'wp_ids', 'wp_titles'
         ]).set_index('politician_id')
 
     def tweets_by(self, twitter_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):

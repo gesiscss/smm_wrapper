@@ -27,6 +27,7 @@ class SMMAPI:
                  lng: str="en",
                  protocol: str="http",
                  domain: str="10.6.13.139:8000",
+                 unit: str="politicians",
                  version: str="v1",
                  attempts: int=2):
         """Constructor of the SMMAPI
@@ -41,6 +42,7 @@ class SMMAPI:
             version (str, optional): the version of the api
             attempts (int, optional): the number of attempts before giving up trying to connect
         """
+        self.unit = unit
 
         self.session = requests.Session()
         if username and password:
@@ -50,17 +52,17 @@ class SMMAPI:
             self.session.params = {}
             self.session.params['api_key'] = api_key
 
-        self.base = "{}://{}/api/politicians/".format(protocol, domain)
+        self.base = "{}://{}/api/{}/".format(protocol, domain, self.unit)
         self.attempts = attempts
 
-    def get_politicians(self):
-        """Returns a list of all entities of politicians.
+    def get_all(self):
+        """Returns a list of all entities of politicians/organizations.
 
         No input parameters
 
         Returns:
             list: result of the api query as documented in Entity list in 
-                http://10.6.13.139:8000/politicians/api/politicians/
+                http://10.6.13.139:8000/api/politicians/
         """
 
         smm_api_politicians_url = '{}all/'.format(self.base)
@@ -68,34 +70,35 @@ class SMMAPI:
         # return the dictionary
         return self.request(smm_api_politicians_url)
 
-    def politician_search(self, names_contain = None, politician_id = None):
-        """Returns either a list with politicians based on the text search or a given politician by id 
+    def all_search(self, names_contain = None, _id = None):
+        """Returns either a list with politicians/organizations based on the text search or a given politician 
+        or organization by id 
 
         Input parameters:
                         names_contain (str): Search text in first name, last name, Twitter or Facebook screen names, or Wikipedia titles
                         OR
-                        politician_id (int): A unique value identifying this politician.
+                        _id (int): A unique value identifying this politician or organization
 
         Returns:
             names_contain: returns a list of all entities searched by names, firstnames and usernames
-            politician_id: returns a given politician by id
+            _id: returns a given politician or organization by id
         """
         if names_contain is not None:
             url = '{}all/search/'.format(self.base)
             parameters={'names_contain': names_contain}
-        elif politician_id is not None:
-            url = '{}all/{}/'.format(self.base, politician_id)
+        elif _id is not None:
+            url = '{}all/{}/'.format(self.base, _id)
             parameters = {}
 
         return self.session.get(url=url, params=parameters).json()
 
-    def tweets_by(self, twitter_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+    def tweets_by(self, twitter_user_id=None, _id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
         """Returns query tweets made by politicians, or by a politician using twitter id or using politician id
 
         Input parameters:
                         twitter_user_id (str): twitter user id
                         OR
-                        politician_id (str): A unique value identifying this politician.
+                        _id (str): A unique value identifying this politician or an organization.
                         optional:
                         text_contains (str): filter tweets by the content of the message
                         from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
@@ -103,27 +106,27 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/api/politicians/swagger/
         """
-        if twitter_user_id is None and politician_id is None:
-            url = '{}twitter/tweets_by/politicians/'.format(self.base)
+        if twitter_user_id is None and _id is None:
+            url = '{}twitter/tweets_by/{}/'.format(self.base, self.unit)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif twitter_user_id is not None:
-            url = '{}twitter/tweets_by/politicians/user_id/{}/'.format(self.base, twitter_user_id)
+            url = '{}twitter/tweets_by/{}/user_id/{}/'.format(self.base, self.unit, twitter_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
-        elif politician_id is not None:
-            url = '{}twitter/tweets_by/politicians/{}/'.format(self.base, politician_id)
+        elif _id is not None:
+            url = '{}twitter/tweets_by/{}/{}/'.format(self.base, self.unit, _id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()
 
-    def replies_to(self, twitter_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+    def replies_to(self, twitter_user_id=None, _id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
         """Returns query twitter replies made by politicians, or by a politician using twitter id or using politician id
 
         Input parameters:
                         twitter_user_id (str): twitter user id
                         OR
-                        politician_id (str): A unique value identifying this politician.
+                        _id (str): A unique value identifying this politician or an organization.
                         optional:
                         text_contains (str): filter tweets by the content of the message
                         from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
@@ -131,27 +134,27 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/api/politicians/swagger/
         """
-        if twitter_user_id is None and politician_id is None:
-            url = '{}twitter/replies_to/politicians/'.format(self.base)
+        if twitter_user_id is None and _id is None:
+            url = '{}twitter/replies_to/{}/'.format(self.base, self.unit)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif twitter_user_id is not None:
-            url = '{}twitter/replies_to/politicians/user_id/{}/'.format(self.base, twitter_user_id)
+            url = '{}twitter/replies_to/{}/user_id/{}/'.format(self.base, self.unit, twitter_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
-        elif politician_id is not None:
-            url = '{}twitter/replies_to/politicians/{}/'.format(self.base, politician_id)
+        elif _id is not None:
+            url = '{}twitter/replies_to/{}/{}/'.format(self.base, self.unit, _id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()
 
-    def posts_by(self, facebook_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+    def posts_by(self, facebook_user_id=None, _id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
         """Returns query posts from facebook made by politicians, or by a politician using facebook id or using politician id
 
         Input parameters:
                         facebook_user_id (str): facebook user id
                         OR
-                        politician_id (str): A unique value identifying this politician.
+                        _id (str): A unique value identifying this politician or organization.
                         optional:
                         text_contains (str): filter tweets by the content of the message
                         from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
@@ -159,27 +162,27 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/api/politicians/swagger/
         """
-        if facebook_user_id is None and politician_id is None:
-            url = '{}facebook/posts_by/politicians/'.format(self.base)
+        if facebook_user_id is None and _id is None:
+            url = '{}facebook/posts_by/{}/'.format(self.base, self.unit)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif facebook_user_id is not None:
-            url = '{}facebook/posts_by/politicians/user_id/{}/'.format(self.base, facebook_user_id)
+            url = '{}facebook/posts_by/{}/user_id/{}/'.format(self.base, self.unit, facebook_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
-        elif politician_id is not None:
-            url = '{}facebook/posts_by/politicians/{}/'.format(self.base, politician_id)
+        elif _id is not None:
+            url = '{}facebook/posts_by/{}/{}/'.format(self.base, self.unit, _id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()
 
-    def comments_by(self, facebook_user_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+    def comments_by(self, facebook_user_id=None, _id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
         """Returns query comments from facebook made by politicians, or by a politician using facebook id or using politician id
 
         Input parameters:
                         facebook_user_id (str): facebook user id
                         OR
-                        politician_id (str): A unique value identifying this politician.
+                        _id (str): A unique value identifying this politician or an organization.
                         optional:
                         text_contains (str): filter tweets by the content of the message
                         from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
@@ -187,47 +190,48 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/api/politicians/swagger/
         """
-        if facebook_user_id is None and politician_id is None:
-            url = '{}facebook/comments_by/politicians/'.format(self.base)
+        if facebook_user_id is None and _id is None:
+            url = '{}facebook/comments_by/{}/'.format(self.base, self.unit)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif facebook_user_id is not None:
-            url = '{}facebook/comments_by/politicians/user_id/{}/'.format(self.base, facebook_user_id)
+            url = '{}facebook/comments_by/{}/user_id/{}/'.format(self.base, self.unit, facebook_user_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
-        elif politician_id is not None:
-            url = '{}facebook/comments_by/politicians/{}/'.format(self.base, politician_id)
+        elif _id is not None:
+            url = '{}facebook/comments_by/{}/{}/'.format(self.base, self.unit, _id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()
 
-    def wikipedia(self, wikipedia_page_id=None, politician_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+    def wikipedia(self, wikipedia_page_id=None, _id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
         """Returns change objects (chobs) that refer to politicians Wikipedia pages, or by a politician using wikipedia page id or using politician id
 
         Input parameters:
                         wikipedia_page_id (str): wikipedia page id
                         OR
-                        politician_id (str): A unique value identifying this politician.
+                        _id (str): A unique value identifying this politician or an organization.
                         optional:
-                        text_contains (str): filter tweets by the content of the message
-                        from_date (string($date)): filter by tweets posted after this date (format: YYYY-MM-DD)
-                        to_date (string($date)): filter by tweets posted before this date (format: YYYY-MM-DD)
+                        text_contains (str): filter chobs by the content of the message
+                        from_date (string($date)): filter by chobs  after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by chobs before this date (format: YYYY-MM-DD)
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in wikipedia content in http://10.6.13.139:8000/politicians/api/swagger/
+            dict, result of the api query as documented in wikipedia content in http://10.6.13.139:8000/api/politicians/swagger/
         """
-        if wikipedia_page_id is None and politician_id is None:
-            url = '{}wikipedia/chobs/politicians/'.format(self.base)
+        if wikipedia_page_id is None and _id is None:
+            url = '{}wikipedia/chobs/{}/'.format(self.base, self.unit)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
         elif wikipedia_page_id is not None:
-            url = '{}wikipedia/chobs/politicians/page_id/{}/'.format(self.base, wikipedia_page_id)
+            url = '{}wikipedia/chobs/{}/page_id/{}/'.format(self.base, self.unit, wikipedia_page_id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
-        elif politician_id is not None:
-            url = '{}wikipedia/chobs/politicians/{}/'.format(self.base, politician_id)
+        elif _id is not None:
+            url = '{}wikipedia/chobs/{}/{}/'.format(self.base, self.unit, _id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
         return self.session.get(url=url, params=parameters).json()
+
 
     def request(self, url: str, tries=2) -> dict:
         """Do the request

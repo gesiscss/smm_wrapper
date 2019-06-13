@@ -42,6 +42,7 @@ comments_by_facebook_id = smm.api.comments_by(facebook_user_id='1619528691651829
 all_chobs = smm.api.wikipedia()
 chobs_by_politician = smm.api.wikipedia(_id='2')
 chobs_by_wikipage = smm.api.wikipedia(wikipedia_page_id='4754538')
+wiki_data = smm.api.wikiwho(wikipedia_page_id='4754538')
 #dataframes
 df_politicians = smm.dv.get_politicians()
 df_tweets = smm.dv.tweets_by(_id='2190')

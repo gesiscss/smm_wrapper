@@ -1,7 +1,6 @@
 """Summary
 """
 from typing import Union
-from wikiwho_wrapper import WikiWho
 
 
 import os
@@ -233,20 +232,6 @@ class SMMAPI:
 
         return self.session.get(url=url, params=parameters).json()
 
-    def wikiwho(self, wikipedia_page_id):
-        """Returns conflict score, number of elegible actions, revisions and conflicts from wikiwho_wrapper. More at https://www.wikiwho.net/en/api_editor/v1.0.0-beta/
-
-        Input parameters:
-                        wikipedia_page_id (str): wikipedia page id
-
-            
-        """
-        ww = WikiWho(lng='de')
-        wiki_data = ww.dv.edit_persistence(page_id=wikipedia_page_id)
-        
-
-        
-        return wiki_data[['year_month','conflict','conflicts','elegibles','revisions']]
 
     def request(self, url: str, tries=2) -> dict:
         """Do the request

@@ -9,3 +9,7 @@ except:
 from .api import SMMAPI
 from .views import DataView
 from .smm import SMM
+from .smm import SMMPoliticians
+from .smm import SMMOrganizations
+
+

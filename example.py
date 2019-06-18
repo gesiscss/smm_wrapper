@@ -1,10 +1,10 @@
 import os
-from smm_wrapper import SMM
+from smm_wrapper import SMMPoliticians, SMMOrganizations
 
 
 # Examples using the api directly
-smm = SMM()
-smm2 = SMM(unit = "organizations")
+smm = SMMPoliticians()
+smm2 = SMMOrganizations()
 list_of_politicians = smm.api.get_all()
 politician_search = smm.api.all_search(names_contain='merkel')
 politician = smm.api.all_search(_id=2193)

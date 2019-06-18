@@ -26,7 +26,7 @@ class SMMAPI:
                  api_key: str=None,
                  lng: str="en",
                  protocol: str="http",
-                 domain: str="10.6.13.139:8000",
+                 domain: str="193.175.238.88:8080",
                  unit: str="politicians",
                  version: str="v1",
                  attempts: int=2):

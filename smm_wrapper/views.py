@@ -266,7 +266,8 @@ class DataView:
         if aggregate_by is None:
             response.pop('response_type')
             df = pd.DataFrame(response)
-            df = df['chobs'].apply(pd.Series)[['right_token','left_token']]
+            df = df['chobs'].apply(pd.Series)[['right_token','left_token', 'ins_tokens', 'del_tokens', 
+            'right_token_str', 'left_token_str', 'ins_tokens_str', 'del_tokens_str']]
             #df = df[['right_token','left_token']]
 
         else:

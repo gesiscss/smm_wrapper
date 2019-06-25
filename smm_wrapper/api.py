@@ -27,7 +27,7 @@ class SMMAPI:
                  lng: str="en",
                  protocol: str="http",
                  domain: str="193.175.238.88:8080",
-                 unit: str="politicians",
+                 unit: str="",
                  version: str="v1",
                  attempts: int=2):
         """Constructor of the SMMAPI
@@ -230,6 +230,29 @@ class SMMAPI:
             url = '{}wikipedia/chobs/{}/{}/'.format(self.base, self.unit, _id)
             parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
 
+        return self.session.get(url=url, params=parameters).json()
+
+    def general_tweets(self, twitter_user_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query tweets made by the general population. This tweets were collected separatedly using keywords.
+
+        Input parameters:
+                        optional:
+                        twitter_user_id (str): twitter user id 
+                        text_contains (str): filter chobs by the content of the message
+                        from_date (string($date)): filter by chobs  after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by chobs before this date (format: YYYY-MM-DD)
+                        aggregate_by (str): criteria that will be used to aggregate (month by default)
+
+        Returns:
+            dict, result of the api query as documented in twitter (general public) content in http://10.6.13.139:8000/api/politicians/swagger/
+        """
+        if twitter_user_id is None:
+            url = '{}twitter/general_population/'.format(self.base)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        else:
+            url = '{}twitter/general_population/user_id/{}/'.format(self.base, twitter_user_id)
+            parameters={'text_contains': text_contains, 'from_date': from_date, 'to_date':to_date, 'aggregate_by': aggregate_by}
+        
         return self.session.get(url=url, params=parameters).json()
 
 

@@ -274,3 +274,41 @@ class DataView:
         df['date'] = pd.to_datetime(df['date'])
 
         return df
+
+    def general_tweets(self, twitter_user_id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
+        """Returns query tweets made by the general population. This tweets were collected separatedly using keywords.
+
+        Input parameters:
+                        optional:
+                        twitter_user_id (str): twitter user id 
+                        text_contains (str): filter chobs by the content of the message
+                        from_date (string($date)): filter by chobs  after this date (format: YYYY-MM-DD)
+                        to_date (string($date)): filter by chobs before this date (format: YYYY-MM-DD)
+                        aggregate_by (str): criteria that will be used to aggregate (month by default)
+
+        Returns:
+            dataframe, result of the api query as documented in twitter (general public) content in http://10.6.13.139:8000/api/politicians/swagger/
+        """
+
+        response = self.api.general_tweets(
+           twitter_user_id, text_contains, from_date, to_date, aggregate_by)
+
+        if twitter_user_id is not None:
+            response['twitter_user_id'] = twitter_user_id
+        if text_contains is not None:
+            response['text_contains'] = text_contains
+        if from_date is not None:
+            response['from_date'] = from_date
+        if to_date is not None:
+            response['to_date'] = to_date
+
+        response.pop('response_type')
+        response.pop('aggregated_by')
+        response['date'] = response.pop('labels')
+        response['tweets'] = response.pop('values')
+
+        df = pd.DataFrame(response)
+
+        df['date'] = pd.to_datetime(df['date'])
+
+        return df

@@ -14,13 +14,14 @@ list_of_organizations = smm2.api.get_all()
 org_tweets = smm2.api.tweets_by()
 org_posts = smm2.api.posts_by()
 posts_by_organization = smm2.api.posts_by(_id='2')
+
+#organizations api, dataframes
 df_organizations = smm2.dv.get_organizations()
 df_org_tweets = smm2.dv.tweets_by()
+df_org_general_tweets = smm2.dv.general_tweets(text_contains='eu')
 df_org_posts = smm2.dv.posts_by()
 df_org_comments = smm2.dv.comments_by()
 df_org_wikipedia = smm2.dv.wikipedia()
-
-#organizations api, dataframes
 
 #twitter, aggregated tweets
 all_tweets = smm.api.tweets_by(text_contains='eu')
@@ -30,6 +31,9 @@ tweets_by_twitter = smm.api.tweets_by(twitter_user_id='389682667')
 all_replies = smm.api.replies_to(text_contains='eu')
 replies_by_politician = smm.api.replies_to(_id='2190')
 replies_by_twitter_id = smm.api.replies_to(twitter_user_id='389682667')
+#twitter, general public
+general_tweets = smm.api.general_tweets(text_contains='eu')
+general_tweets_id = smm.api.general_tweets(twitter_user_id='389682667', text_contains='eu')
 #facebook, aggregated posts
 all_posts = smm.api.posts_by(text_contains='eu')
 posts_by_politician = smm.api.posts_by(_id='2193')
@@ -45,8 +49,9 @@ chobs_by_wikipage = smm.api.wikipedia(wikipedia_page_id='4754538')
 #dataframes
 df_politicians = smm.dv.get_politicians()
 df_tweets = smm.dv.tweets_by(_id='2190')
+df_general_tweets = smm.dv.general_tweets(text_contains='eu')
 df_posts = smm.dv.posts_by(_id='27')
 df_comments = smm.dv.comments_by(_id='27')
-df_wikipedia = smm.dv.wikipedia(_id='27')
+df_wikipedia = smm.dv.wikipedia()
 
 import ipdb; ipdb.set_trace()  # breakpoint 67efd4b1 //

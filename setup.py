@@ -11,9 +11,9 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="smm_wrapper",
-    version="1.1.1",
+    version="1.1.2",
     # Author details
-    author="Alexandra Stannida, Roberto Ulloa",
+    author="Alexandra Stankevich, Roberto Ulloa",
     author_email="alexandra.stankevich@gesis.org,roberto.ulloa@gesis.org",
     description="A light Python wrapper for the SMM API (Politicians Social Media Monitoring API)",
     long_description=long_description,

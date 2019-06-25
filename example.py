@@ -52,6 +52,6 @@ df_tweets = smm.dv.tweets_by(_id='2190')
 df_general_tweets = smm.dv.general_tweets(text_contains='eu')
 df_posts = smm.dv.posts_by(_id='27')
 df_comments = smm.dv.comments_by(_id='27')
-df_wikipedia = smm.dv.wikipedia()
+df_wikipedia = smm.dv.wikipedia(_id='27')
 
 import ipdb; ipdb.set_trace()  # breakpoint 67efd4b1 //

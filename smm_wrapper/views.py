@@ -263,15 +263,19 @@ class DataView:
             response['from_date'] = from_date
         if to_date is not None:
             response['to_date'] = to_date
+        if aggregate_by is None:
+            response.pop('response_type')
+            df = pd.DataFrame(response)
+            df = df['chobs'].apply(pd.Series)[['right_token','left_token']]
+            #df = df[['right_token','left_token']]
 
-        response.pop('response_type')
-        response.pop('aggregated_by')
-        response['date'] = response.pop('labels')
-        response['chobs'] = response.pop('values')
-
-        df = pd.DataFrame(response)
-
-        df['date'] = pd.to_datetime(df['date'])
+        else:
+            response.pop('response_type')
+            response.pop('aggregated_by')
+            response['date'] = response.pop('labels')
+            response['chobs'] = response.pop('values')
+            df = pd.DataFrame(response)
+            df['date'] = pd.to_datetime(df['date'])
 
         return df
 

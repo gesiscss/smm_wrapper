@@ -11,7 +11,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="smm_wrapper",
-    version="1.1.2",
+    version="1.1.3",
     # Author details
     author="Alexandra Stankevich, Roberto Ulloa",
     author_email="alexandra.stankevich@gesis.org,roberto.ulloa@gesis.org",
@@ -22,7 +22,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: BSD License",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
     # What does your project relate to?

@@ -22,7 +22,7 @@ class SMM:
                  api_key: str=None,
                  lng: str="en",
                  protocol: str="http",
-                 domain: str="193.175.238.88:8080",
+                 domain: str="mediamonitoring.gesis.org",
                  unit: str="politicians",
                  version: str="v1",
                  attempts: int=2):
@@ -70,7 +70,7 @@ class SMMPoliticians:
                  api_key: str=None,
                  lng: str="en",
                  protocol: str="http",
-                 domain: str="193.175.238.88:8080",
+                 domain: str="mediamonitoring.gesis.org",
                  version: str="v1",
                  attempts: int=2):
         """Constructor of the SMM
@@ -116,7 +116,7 @@ class SMMOrganizations:
                  api_key: str=None,
                  lng: str="en",
                  protocol: str="http",
-                 domain: str="193.175.238.88:8080",
+                 domain: str="mediamonitoring.gesis.org",
                  version: str="v1",
                  attempts: int=2):
         """Constructor of the SMM

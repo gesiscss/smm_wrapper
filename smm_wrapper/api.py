@@ -62,13 +62,31 @@ class SMMAPI:
 
         Returns:
             list: result of the api query as documented in Entity list in 
-                http://10.6.13.139:8000/api/politicians/
+                http://mediamonitoring.gesis.org/api/politicians/swagger/
         """
 
-        smm_api_politicians_url = '{}all/'.format(self.base)
+        smm_api_url = '{}all/'.format(self.base)
 
         # return the dictionary
-        return self.request(smm_api_politicians_url)
+        return self.request(smm_api_url)
+
+    def get_one(self, _id):
+        """Returns the information of one politician/organization.
+        
+        Input parameters:
+            _id (int): the id of the entity politician or organiation
+        
+        Returns:
+            list: result of the api query as documented in Entity list in 
+                http://mediamonitoring.gesis.org/api/politicians/swagger/
+        
+        
+        """
+
+        smm_api_url = '{}all/{}'.format(self.base, _id)
+
+        # return the dictionary
+        return self.request(smm_api_url)
 
     def all_search(self, names_contain = None, _id = None):
         """Returns either a list with politicians/organizations based on the text search or a given politician 
@@ -106,7 +124,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/api/politicians/swagger/
+            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://mediamonitoring.gesis.org/api/politicians/swagger/swagger/
         """
         if twitter_user_id is None and _id is None:
             url = '{}twitter/tweets_by/{}/'.format(self.base, self.unit)
@@ -134,7 +152,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://10.6.13.139:8000/api/politicians/swagger/
+            dict, result of the api query as documented in twitter tweets_by/replies_to content in http://mediamonitoring.gesis.org/api/politicians/swagger/swagger/
         """
         if twitter_user_id is None and _id is None:
             url = '{}twitter/replies_to/{}/'.format(self.base, self.unit)
@@ -162,7 +180,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/api/politicians/swagger/
+            dict, result of the api query as documented in facebook posts_by/comments_by content in http://mediamonitoring.gesis.org/api/politicians/swagger/swagger/
         """
         if facebook_user_id is None and _id is None:
             url = '{}facebook/posts_by/{}/'.format(self.base, self.unit)
@@ -190,7 +208,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in facebook posts_by/comments_by content in http://10.6.13.139:8000/api/politicians/swagger/
+            dict, result of the api query as documented in facebook posts_by/comments_by content in http://mediamonitoring.gesis.org/api/politicians/swagger/swagger/
         """
         if facebook_user_id is None and _id is None:
             url = '{}facebook/comments_by/{}/'.format(self.base, self.unit)
@@ -218,7 +236,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in wikipedia content in http://10.6.13.139:8000/api/politicians/swagger/
+            dict, result of the api query as documented in wikipedia content in http://mediamonitoring.gesis.org/api/politicians/swagger/swagger/
         """
         if wikipedia_page_id is None and _id is None:
             url = '{}wikipedia/chobs/{}/'.format(self.base, self.unit)
@@ -244,7 +262,7 @@ class SMMAPI:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dict, result of the api query as documented in twitter (general public) content in http://10.6.13.139:8000/api/politicians/swagger/
+            dict, result of the api query as documented in twitter (general public) content in http://mediamonitoring.gesis.org/api/politicians/swagger/swagger/
         """
         if twitter_user_id is None:
             url = '{}twitter/general_population/'.format(self.base)

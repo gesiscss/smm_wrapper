@@ -11,7 +11,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="smm_wrapper",
-    version="1.1.3",
+    version="1.1.4",
     # Author details
     author="Alexandra Stankevich, Roberto Ulloa",
     author_email="alexandra.stankevich@gesis.org,roberto.ulloa@gesis.org",

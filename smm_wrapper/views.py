@@ -15,19 +15,20 @@ class DataView:
         api (TYPE): Description
     """
 
-    def __init__(self, api):
+    def __init__(self, api, id_column):
         """Constructor of the DataView
         Args:
             api (TYPE): the SMMAPI
         """
         self.api = api
+        self.id_column = id_column
 
     def get_politicians(self) -> pd.DataFrame:
         """Get entities of all politicians and their respective facebook, twitter and wikipedia ids.
 
         Returns:
             dataframe: result of the api query as documented in Entity list in 
-                http://10.6.13.139:8000/politicians/api/politicians/
+                http://mediamonitoring.gesis.org/politicians/api/politicians/
             politician_id:int,  unique identifier for a politician
             name:str, name of a politician
             firstname:str, firstname of a politician
@@ -43,12 +44,33 @@ class DataView:
             'politician_id', 'name', 'firstname', 'affiliation', 'fb_ids', 'tw_ids', 'wp_ids', 'wp_titles'
         ]).set_index('politician_id')
 
+    def get_politician(self, _id) -> pd.DataFrame:
+        """Get entities of a politicians and their respective facebook, twitter and wikipedia ids.
+        Input parameters:
+                        _id (str): A unique value identifying this politician or an organization.
+
+        Returns:
+            dataframe: result of the api query as documented in Entity list in 
+                http://mediamonitoring.gesis.org/politicians/api/politicians/
+            politician_id:int,  unique identifier for a politician
+            name:str, name ofs a politician
+            firstname:str, firstname of a politician
+            affiliation:str, party to which a politician is affiliated
+            fb_ids:list(int), ids of all facebook accounts for a politician
+            tw_ids:list(int), ids of all twitter accounts for a politician
+            wp_ids:list(int), ids of all wikipedia pages for a politician
+            wp_titles:list(string), wikipedia titles associated to the politician
+        """
+        response = self.api.get(_id)
+
+        return pd.Series(response)
+
     def get_organizations(self) -> pd.DataFrame:
         """Get entities of all organizations and their respective facebook, twitter and wikipedia ids.
 
         Returns:
             dataframe: result of the api query as documented in Entity list in 
-                http://10.6.13.139:8000/api/organizations/all
+                http://mediamonitoring.gesis.org/api/organizations/all
             organization_id:int,  unique identifier for an organization
             name:str, name of an organization
             category:str, type of an organization (media or a party)
@@ -64,6 +86,70 @@ class DataView:
             'organization_id', 'name', 'category', 'subcategory', 'fb_ids', 'tw_ids', 'wp_ids', 'wp_titles'
         ]).set_index('organization_id')
 
+
+    def get_organization(self, _id) -> pd.DataFrame:
+        """Get entities of an organization and their respective facebook, twitter and wikipedia ids.
+        Input parameters:
+                        _id (str): A unique value identifying this politician or an organization.
+
+        Returns:
+            dataframe: result of the api query as documented in Entity list in 
+                http://mediamonitoring.gesis.org/politicians/api/politicians/
+            politician_id:int,  unique identifier for a politician
+            name:str, name ofs a politician
+            firstname:str, firstname of a politician
+            affiliation:str, party to which a politician is affiliated
+            fb_ids:list(int), ids of all facebook accounts for a politician
+            tw_ids:list(int), ids of all twitter accounts for a politician
+            wp_ids:list(int), ids of all wikipedia pages for a politician
+            wp_titles:list(string), wikipedia titles associated to the politician
+        """
+        response = self.api.get(_id)
+
+        return pd.Series(response)
+
+
+    def get_all(self) -> pd.DataFrame:
+        """Get all entities and their respective facebook, twitter and wikipedia ids.
+
+        Returns:
+            dataframe: result of the api query as documented in Entity list in 
+                http://mediamonitoring.gesis.org/api/organizations/all
+            organization_id:int,  unique identifier for an organization
+            name:str, name of an organization
+            category:str, type of an organization (media or a party)
+            subcategory:str, subcategory of an organization (name of a party or type of media)
+            fb_ids:list(int), ids of all facebook accounts for an organization
+            tw_ids:list(int), ids of all twitter accounts for an organization
+            wp_ids:list(int), ids of all wikipedia pages for an organization
+            wp_titles:list(string), wikipedia titles associated to the organization
+        """
+        response = self.api.get_all()
+
+        return pd.DataFrame(response).set_index(self.id_column)
+
+
+    def get_one(self, _id) -> pd.DataFrame:
+        """Get an entity and their respective facebook, twitter and wikipedia ids.
+        Input parameters:
+                        _id (str): A unique value identifying this politician or an organization.
+
+        Returns:
+            dataframe: result of the api query as documented in Entity list in 
+                http://mediamonitoring.gesis.org/politicians/api/politicians/
+            politician_id:int,  unique identifier for a politician
+            name:str, name ofs a politician
+            firstname:str, firstname of a politician
+            affiliation:str, party to which a politician is affiliated
+            fb_ids:list(int), ids of all facebook accounts for a politician
+            tw_ids:list(int), ids of all twitter accounts for a politician
+            wp_ids:list(int), ids of all wikipedia pages for a politician
+            wp_titles:list(string), wikipedia titles associated to the politician
+        """
+        response = self.api.get_one(_id)
+
+        return pd.Series(response)
+
     def tweets_by(self, twitter_user_id=None, _id=None, text_contains=None, from_date=None, to_date=None, aggregate_by='month'):
         """Returns query tweets made by politicians, or by a politician using twitter id or using politician id
 
@@ -78,7 +164,7 @@ class DataView:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            DataFrame, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/api/politicians/swagger/
+            DataFrame, result of the api query as documented in twitter tweets_by/reply_to content in http://mediamonitoring.gesis.org/api/politicians/swagger/
         """
 
         response = self.api.tweets_by(
@@ -121,7 +207,7 @@ class DataView:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            DataFrame, result of the api query as documented in twitter tweets_by/reply_to content in http://10.6.13.139:8000/api/politicians/swagger/
+            DataFrame, result of the api query as documented in twitter tweets_by/reply_to content in http://mediamonitoring.gesis.org/api/politicians/swagger/
         """
 
         response = self.api.replies_to(
@@ -163,7 +249,7 @@ class DataView:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            DataFrame, result of the api query as documented in facebook posts_by content in http://10.6.13.139:8000/api/politicians/swagger/
+            DataFrame, result of the api query as documented in facebook posts_by content in http://mediamonitoring.gesis.org/api/politicians/swagger/
         """
 
         response = self.api.posts_by(
@@ -205,7 +291,7 @@ class DataView:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            DataFrame, result of the api query as documented in facebook comments_by content in http://10.6.13.139:8000/api/politicians/swagger/
+            DataFrame, result of the api query as documented in facebook comments_by content in http://mediamonitoring.gesis.org/api/politicians/swagger/
         """
 
         response = self.api.comments_by(
@@ -247,7 +333,7 @@ class DataView:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            DataFrame, result of the api query as documented in wikipedia content in http://10.6.13.139:8000/api/politicians/swagger/
+            DataFrame, result of the api query as documented in wikipedia content in http://mediamonitoring.gesis.org/api/politicians/swagger/
         """
 
         response = self.api.wikipedia(
@@ -292,7 +378,7 @@ class DataView:
                         aggregate_by (str): criteria that will be used to aggregate (month by default)
 
         Returns:
-            dataframe, result of the api query as documented in twitter (general public) content in http://10.6.13.139:8000/api/politicians/swagger/
+            dataframe, result of the api query as documented in twitter (general public) content in http://mediamonitoring.gesis.org/api/politicians/swagger/
         """
 
         response = self.api.general_tweets(

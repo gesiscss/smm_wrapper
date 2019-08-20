@@ -17,6 +17,11 @@ posts_by_organization = smm2.api.posts_by(_id='2')
 
 #organizations api, dataframes
 df_organizations = smm2.dv.get_organizations()
+df_all = smm2.dv.get_all()
+if not df_organizations.equals(df_all[df_organizations.columns]):
+    raise Exception('problem')
+
+one = smm2.dv.get_one(240)
 df_org_tweets = smm2.dv.tweets_by()
 df_org_general_tweets = smm2.dv.general_tweets(text_contains='eu')
 df_org_posts = smm2.dv.posts_by()
@@ -48,6 +53,11 @@ chobs_by_politician = smm.api.wikipedia(_id='2')
 chobs_by_wikipage = smm.api.wikipedia(wikipedia_page_id='4754538')
 #dataframes
 df_politicians = smm.dv.get_politicians()
+df_all = smm.dv.get_all()
+if not df_politicians.equals(df_all[df_politicians.columns]):
+    raise Exception('problem')
+
+one = smm.dv.get_one(240)
 df_tweets = smm.dv.tweets_by(_id='2190')
 df_general_tweets = smm.dv.general_tweets(text_contains='eu')
 df_posts = smm.dv.posts_by(_id='27')

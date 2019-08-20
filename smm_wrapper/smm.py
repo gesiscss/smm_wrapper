@@ -97,7 +97,7 @@ class SMMPoliticians:
                               version,
                               attempts)
 
-        self.dv = DataView(self.api)
+        self.dv = DataView(self.api, id_column='politician_id')
 
 class SMMOrganizations:
 
@@ -143,5 +143,5 @@ class SMMOrganizations:
                               version,
                               attempts)
 
-        self.dv = DataView(self.api)
+        self.dv = DataView(self.api, id_column='organization_id')
 

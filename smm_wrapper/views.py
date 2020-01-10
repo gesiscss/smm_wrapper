@@ -41,7 +41,8 @@ class DataView:
         response = self.api.get_all()
 
         return pd.DataFrame(response, columns=[
-            'politician_id', 'name', 'firstname', 'affiliation', 'fb_ids', 'tw_ids', 'wp_ids', 'wp_titles'
+            'politician_id', 'name', 'firstname', 'affiliation', 'fb_ids', 'tw_ids', 
+            'wp_ids', 'wp_titles', 'tw_sns', 'wp_sns'
         ]).set_index('politician_id')
 
     def get_politician(self, _id) -> pd.DataFrame:
@@ -83,7 +84,8 @@ class DataView:
         response = self.api.get_all()
 
         return pd.DataFrame(response, columns=[
-            'organization_id', 'name', 'category', 'subcategory', 'fb_ids', 'tw_ids', 'wp_ids', 'wp_titles'
+            'organization_id', 'name', 'category', 'subcategory', 'fb_ids', 'tw_ids', 
+            'wp_ids', 'wp_titles', 'tw_sns', 'wp_sns'
         ]).set_index('organization_id')
 
 
